@@ -10,6 +10,7 @@ export interface GetPostsOutputDTO {
   content: string;
   likes: number;
   dislikes: number;
+  comments: number;
   createdAt: string;
   updatedAt: string;
   creator: {

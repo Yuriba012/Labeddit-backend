@@ -40,15 +40,40 @@ export class CommentsDatabase extends BaseDatabase {
     await BaseDatabase.connection(CommentsDatabase.TABLE_COMMENTS).insert(
       newComment
     );
+    let [commentsAmount] = await BaseDatabase.connection
+    .select("comments")
+    .from(CommentsDatabase.TABLE_POSTS)
+    .where({ id: newComment.post_id });
+
+    commentsAmount.comments++;
+
+      await BaseDatabase.connection(CommentsDatabase.TABLE_POSTS)
+        .update({ comments: commentsAmount.comments })
+        .where({ id: newComment.post_id });
   };
 
   public getCommentById = async (
     commentId: string
   ): Promise<CommentOutputDB | undefined> => {
     const [commentDB]: CommentOutputDB[] | undefined =
-      await BaseDatabase.connection(CommentsDatabase.TABLE_COMMENTS).where({
-        id: commentId,
-      });
+    await BaseDatabase.connection
+    .select(
+      "comments.id",
+      "comments.content",
+      "comments.likes",
+      "comments.dislikes",
+      "comments.created_at",
+      "comments.updated_at",
+      "comments.post_id",
+      "comments.creator_id",
+      "users.name"
+    )
+    .from(CommentsDatabase.TABLE_COMMENTS)
+    .leftJoin(CommentsDatabase.TABLE_USERS, (comment_user) => {
+      comment_user.on("comments.creator_id", "=", "users.id");
+    })
+    .where("comments.id", "=", commentId);
+
     return commentDB;
   };
 
@@ -205,7 +230,19 @@ export class CommentsDatabase extends BaseDatabase {
         .where({ id: commentId });
     }
   };
-  public deleteComment = async (idToDelete: string): Promise<void> => {
+  public deleteComment = async (idToDelete: string, post_id: string): Promise<void> => {
+
+    let [commentsAmount] = await BaseDatabase.connection
+    .select("comments")
+    .from(CommentsDatabase.TABLE_POSTS)
+    .where({ id: post_id });
+
+    commentsAmount.comments--;
+
+      await BaseDatabase.connection(CommentsDatabase.TABLE_POSTS)
+        .update({ comments: commentsAmount.comments })
+        .where({ id: post_id });
+
     await BaseDatabase.connection(CommentsDatabase.TABLE_COMMENTS)
       .delete()
       .where({ id: idToDelete });

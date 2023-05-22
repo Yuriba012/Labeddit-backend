@@ -4,6 +4,7 @@ export class Post {
     private content: string,
     private likes: number,
     private dislikes: number,
+    private comments: number,
     private createdAt: string,
     private updatedAt: string,
     private creator: {
@@ -32,6 +33,9 @@ export class Post {
   public getCreator() {
     return this.creator;
   }
+  public getComments(){
+    return this.comments;
+  }
   public setId(newId:string): void {
     this.id = newId;
   }
@@ -49,5 +53,8 @@ export class Post {
   }
   public setCreator(object: { id: string, name: string }): void {
     this.creator = object;
+  }
+  public setComments(newComments: number):void{
+    this.comments = newComments;
   }
 }

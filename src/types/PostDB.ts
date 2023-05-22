@@ -3,6 +3,7 @@ export interface PostOutputDB {
   content: string;
   likes: number;
   dislikes: number;
+  comments: number;
   created_at: string;
   updated_at: string;
   creator_id: string;
@@ -21,6 +22,7 @@ export interface PostRawDB {
   content: string;
   likes: number;
   dislikes: number;
+  comments: number;
   created_at: string;
   updated_at: string;
 }

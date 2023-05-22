@@ -5,6 +5,7 @@ import { PostsDatabase } from "../database/PostsDatabase";
 import { IdGenerator } from "../services/IdGenerator";
 import { UsersDatabase } from "../database/UsersDatabase";
 import { TokenManager } from "../services/TokenManager";
+import { CommentsDatabase } from "../database/CommentsDatabase";
 
 export const postsRouter = express.Router();
 
@@ -13,6 +14,7 @@ const postsController = new PostsController(
 );
 
 postsRouter.get("/", postsController.getPosts);
+postsRouter.get("/:id", postsController.getPostById);
 postsRouter.post("/", postsController.createPost);
 postsRouter.put("/:id", postsController.editPost);
 postsRouter.put("/:id/like", postsController.putLike);

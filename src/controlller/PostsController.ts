@@ -25,7 +25,7 @@ export class PostsController {
     } catch (error) {
       console.log(error);
       if (error instanceof ZodError) {
-        res.status(400).send(error.issues);
+        res.status(400).send(error.issues[0].message);
       } else if (error instanceof BaseError) {
         res.status(error.statusCode).send(error.message);
       } else {
@@ -33,6 +33,28 @@ export class PostsController {
       }
     }
   };
+
+  public getPostById = async (req: Request, res: Response) =>{
+    try {
+      const input = {
+        id: req.params.id,
+        token: req.headers.authorization
+      }
+      const output: GetPostsOutputDTO = await this.postsBusiness.getPostById(
+        input
+      );
+      res.status(200).send(output);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof ZodError) {
+        res.status(400).send(error.issues[0].message);
+      } else if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message);
+      } else {
+        res.status(500).send("Erro inesperado");
+      }
+    }
+  }
 
   public createPost = async (req: Request, res: Response) => {
     try {
@@ -49,7 +71,7 @@ export class PostsController {
       console.log(error);
 
       if (error instanceof ZodError) {
-        res.status(400).send(error.issues);
+        res.status(400).send(error.issues[0].message);
       } else if (error instanceof BaseError) {
         res.status(error.statusCode).send(error.message);
       } else {
@@ -73,7 +95,7 @@ export class PostsController {
       console.log(error);
 
       if (error instanceof ZodError) {
-        res.status(400).send(error.issues);
+        res.status(400).send(error.issues[0].message);
       } else if (error instanceof BaseError) {
         res.status(error.statusCode).send(error.message);
       } else {
@@ -97,7 +119,7 @@ export class PostsController {
       console.log(error);
 
       if (error instanceof ZodError) {
-        res.status(400).send(error.issues);
+        res.status(400).send(error.issues[0].message);
       } else if (error instanceof BaseError) {
         res.status(error.statusCode).send(error.message);
       } else {
@@ -120,7 +142,7 @@ export class PostsController {
       console.log(error);
 
       if (error instanceof ZodError) {
-        res.status(400).send(error.issues);
+        res.status(400).send(error.issues[0].message);
       } else if (error instanceof BaseError) {
         res.status(error.statusCode).send(error.message);
       } else {

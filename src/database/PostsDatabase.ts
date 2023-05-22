@@ -15,7 +15,7 @@ export class PostsDatabase extends BaseDatabase {
 
   public getPosts = async (
     query: string | undefined
-  ): Promise<PostOutputDB[]> => {
+  ): Promise<PostOutputDB[] | undefined> => {
     let postsDB;
 
     if (query) {
@@ -25,6 +25,7 @@ export class PostsDatabase extends BaseDatabase {
           "posts.content",
           "posts.likes",
           "posts.dislikes",
+          "posts.comments",
           "posts.created_at",
           "posts.updated_at",
           "posts.creator_id",
@@ -44,6 +45,7 @@ export class PostsDatabase extends BaseDatabase {
           "posts.content",
           "posts.likes",
           "posts.dislikes",
+          "posts.comments",
           "posts.created_at",
           "posts.updated_at",
           "posts.creator_id",
@@ -56,7 +58,7 @@ export class PostsDatabase extends BaseDatabase {
       postsDB = result;
     }
 
-    return postsDB;
+    return (postsDB.length === 0? undefined : postsDB);
   };
 
   public createPost = async (newPost: PostInputDB): Promise<void> => {
@@ -74,6 +76,7 @@ export class PostsDatabase extends BaseDatabase {
         "posts.content",
         "posts.likes",
         "posts.dislikes",
+        "posts.comments",
         "posts.created_at",
         "posts.updated_at",
         "posts.creator_id",
