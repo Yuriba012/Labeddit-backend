@@ -18,7 +18,7 @@ export const SignInInputSchema = z
         required_error: "'email' é obrigatório para efetuar a requisição",
         invalid_type_error: "'email' deve ser do tipo string",
       })
-      .email()
+      .email({message: "'email' deve ter o formato 'meuemail@email.com'"})
       .min(0),
     password: z
       .string({

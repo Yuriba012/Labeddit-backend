@@ -25,6 +25,7 @@ CREATE TABLE posts(
     content TEXT NOT NULL,
     likes INTEGER DEFAULT(0) NOT NULL,
     dislikes INTEGER DEFAULT(0) NOT NULL,
+    comments INTEGER DEFAULT(0) NOT NULL,
     created_at TEXT DEFAULT(DATETIME('now')),
     updated_at TEXT,
     FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
@@ -87,3 +88,5 @@ DROP TABLE posts_likes;
 DROP TABLE comments;
 
 DROP TABLE comments_likes;
+
+SELECT COUNT(*) FROM comments WHERE(post_id = 'p004');

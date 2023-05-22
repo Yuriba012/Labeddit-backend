@@ -28,7 +28,7 @@ export class UsersBusiness {
 
     const role = USER_ROLE.NORMAL;
 
-    const userExists = await this.usersDatabase.getUserById(id);
+    const userExists = await this.usersDatabase.getUserByEmail(email);
 
     if (userExists) {
       throw new BadRequestError("Usuário já cadastrado.");
@@ -81,8 +81,6 @@ export class UsersBusiness {
     const userExists: UserDB | undefined =
       await this.usersDatabase.getUserByEmail(email);
 
-
-      console.log(password)
     if (!userExists) {
       throw new NotFoundError("Email não encontrado");
     }

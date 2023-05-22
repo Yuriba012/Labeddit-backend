@@ -23,7 +23,7 @@ export const CreateUserInputSchema = z
         required_error: "'name' é obrigatório para efetuar a requisição",
         invalid_type_error: "'name' deve ser do tipo string",
       })
-      .min(2),
+      .min(4,{message: "Apelido deve conter ao menos 4 caracteres"}),
     email: z
       .string({
         required_error: "'email' é obrigatório para efetuar a requisição",

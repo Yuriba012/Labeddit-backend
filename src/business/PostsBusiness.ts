@@ -1,3 +1,4 @@
+import { CommentsDatabase } from "../database/CommentsDatabase";
 import { PostsDatabase } from "../database/PostsDatabase";
 import { UsersDatabase } from "../database/UsersDatabase";
 import { CreatePostInputDTO, CreatePostOutputDTO } from "../dto/createPost.dto";
@@ -17,6 +18,7 @@ import {
   PostOutputDB,
   PostRawDB,
 } from "../types/PostDB";
+import { USER_ROLE } from "../types/USER_ROLE";
 
 export class PostsBusiness {
   constructor(
@@ -37,7 +39,11 @@ export class PostsBusiness {
       throw new BadRequestError("Token inválido");
     }
 
-    const posts: PostOutputDB[] = await this.postsDatabase.getPosts(query);
+    const posts: PostOutputDB[] | undefined = await this.postsDatabase.getPosts(query);
+
+    if (!posts){
+      throw new NotFoundError("Nenhum post foi encontrado.")
+    }
 
     const checkedPosts: Post[] = posts.map(
       (post) =>
@@ -46,6 +52,7 @@ export class PostsBusiness {
           post.content,
           post.likes,
           post.dislikes,
+          post.comments,
           post.created_at,
           post.updated_at,
           { id: post.creator_id, name: post.name }
@@ -58,6 +65,7 @@ export class PostsBusiness {
         content: post.getContent(),
         likes: post.getLikes(),
         dislikes: post.getDislikes(),
+        comments: post.getComments(),
         createdAt: post.getCreatedAt(),
         updatedAt: post.getUpdatedAt(),
         creator: post.getCreator(),
@@ -65,6 +73,42 @@ export class PostsBusiness {
     });
     return output;
   };
+
+  public getPostById = async (input: any) => {
+    const {id, token} = input
+    const isTokenValid = this.tokenManager.getPayload(token);
+
+    if (!isTokenValid) {
+      throw new BadRequestError("Token inválido");
+    }
+    const post = await this.postsDatabase.getPostByIdOutputForm(id)
+    if(!post){
+      throw new NotFoundError("post não encontrado")
+    }
+    const checkedPost = 
+        new Post(
+          post.id,
+          post.content,
+          post.likes,
+          post.dislikes,
+          post.comments,
+          post.created_at,
+          post.updated_at,
+          { id: post.creator_id, name: post.name }
+        )
+        const output: GetPostsOutputDTO = {
+            id: checkedPost.getId(),
+            content: checkedPost.getContent(),
+            likes: checkedPost.getLikes(),
+            dislikes: checkedPost.getDislikes(),
+            comments: checkedPost.getComments(),
+            createdAt: checkedPost.getCreatedAt(),
+            updatedAt: checkedPost.getUpdatedAt(),
+            creator: checkedPost.getCreator(),
+        }
+
+        return output;
+  }
 
   public createPost = async (
     input: CreatePostInputDTO
@@ -227,7 +271,7 @@ export class PostsBusiness {
       );
     }
 
-    if (payload.id !== postExists.creator_id) {
+    if (payload.id !== postExists.creator_id && payload.role !== USER_ROLE.ADMIN) {
       throw new BadRequestError(
         "O post deve pertencer ao usuário logado para que possa deletá-lo"
       );

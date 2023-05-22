@@ -6,7 +6,6 @@ import {
   CreateCommentOutputDTO,
 } from "../dto/createComment.dto";
 import { DeleteCommentInputDTO, DeleteCommentOutputDTO } from "../dto/deleteComment.dto";
-import { DeletePostOutputDTO } from "../dto/deletePost.dto";
 import { EditCommentInputDTO, EditCommentOutputDTO } from "../dto/editComment.dto";
 import {
   GetCommentsInputDTO,
@@ -20,7 +19,7 @@ import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager } from "../services/TokenManager";
 import { CommentInputDB, CommentOutputDB, EditedCommentToDB } from "../types/Comment";
 import { InputCommentLikeDB, InputLikeDB } from "../types/InputLikeDB";
-import { PostInputDB } from "../types/PostDB";
+import { USER_ROLE } from "../types/USER_ROLE";
 
 export class CommentsBusiness {
   constructor(
@@ -245,13 +244,13 @@ export class CommentsBusiness {
       );
     }
 
-    if (payload.id !== commentExists.creator_id) {
+    if (payload.id !== commentExists.creator_id && payload.role !== USER_ROLE.ADMIN) {
       throw new BadRequestError(
         "O comentário deve pertencer ao usuário logado para que possa deletá-lo"
       );
     }
 
-    await this.commentsDatabase.deleteComment(idToDelete);
+    await this.commentsDatabase.deleteComment(idToDelete, commentExists.post_id);
     const output: DeleteCommentOutputDTO = {
       message: "Comentário deletado com sucesso.",
     };

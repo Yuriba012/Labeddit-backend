@@ -12,6 +12,6 @@ const usersController = new UsersController(
   new UsersBusiness(new UsersDatabase(), new IdGenerator(), new TokenManager(), new HashManager())
 );
 
-usersRouter.post("/", usersController.createUser);
+usersRouter.post("/signup", usersController.createUser);
 usersRouter.post("/signin", usersController.signIn);
 
