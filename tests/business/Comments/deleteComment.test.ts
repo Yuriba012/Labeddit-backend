@@ -23,7 +23,7 @@ describe("Teste do método putLikeComment", () => {
 
     const output = await commentsBusiness.deleteComment(input);
     expect(output).toEqual({
-      message: "Comentário deletado com sucesso.",
+      message: "Seu comentário foi excluído",
     });
   });
 
@@ -35,7 +35,7 @@ describe("Teste do método putLikeComment", () => {
 
     const output = await commentsBusiness.deleteComment(input);
     expect(output).toEqual({
-      message: "Comentário deletado com sucesso.",
+      message: "Seu comentário foi excluído",
     });
   });
 });

@@ -35,10 +35,10 @@ export const CreateUserInputSchema = z
         required_error: "'password' é obrigatório para efetuar a requisição",
         invalid_type_error: "'password' deve ser do tipo string",
       })
-      .min(8, { message: "A senha deve conter no mínimo 8 caracteres." })
-      .max(12, { message: "A senha deve conter no máximo 12 caracteres." })
+      .min(8, { message: "A senha deve conter de 8 a 12 caracteres (letras e números). Ex: abcdef12" })
+      .max(12, { message: "A senha deve conter de 8 a 12 caracteres (letras e números). Ex: abcdef12" })
       .regex(/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]+$/, {
-        message: "A senha deve conter caracteres numéricos e alfanuméricos.",
+        message: "A senha deve conter de 8 a 12 caracteres (letras e números). Ex: abcdef12",
       }),
   })
   .transform((data) => data as CreateUserInputDTO);

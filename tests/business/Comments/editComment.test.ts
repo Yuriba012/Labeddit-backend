@@ -25,7 +25,7 @@ describe("Teste do método editComment", () => {
     const output = await commentsBusiness.editComment(input);
 
     expect(output).toEqual({
-      message: "Comentário modificado com sucesso.",
+      message: "Comentário modificado!"
     });
   });
 });

@@ -88,5 +88,3 @@ DROP TABLE posts_likes;
 DROP TABLE comments;
 
 DROP TABLE comments_likes;
-
-SELECT COUNT(*) FROM comments WHERE(post_id = 'p004');

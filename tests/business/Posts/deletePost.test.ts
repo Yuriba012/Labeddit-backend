@@ -4,7 +4,6 @@ import { UsersDatabaseMock } from "../../mocks/UsersDatabaseMock";
 import { PostsDatabaseMock } from "../../mocks/PostsDatabaseMock";
 import { PostsBusiness } from "../../../src/business/PostsBusiness";
 import { DeletePostInputSchema } from "../../../src/dto/deletePost.dto";
-import { CommentsDatabaseMock } from "../../mocks/CommentsDatabaseMock";
 
 describe("Teste do método deletePost", () => {
   const postsBusiness = new PostsBusiness(
@@ -22,7 +21,7 @@ describe("Teste do método deletePost", () => {
 
     const output = await postsBusiness.deletePost(input);
     expect(output).toEqual({
-      message: "Post deletado com sucesso.",
+      message: "Seu post foi excluído",
     });
   });
 
@@ -34,7 +33,7 @@ describe("Teste do método deletePost", () => {
 
     const output = await postsBusiness.deletePost(input);
     expect(output).toEqual({
-      message: "Post deletado com sucesso.",
+      message: "Seu post foi excluído",
     });
   });
 });

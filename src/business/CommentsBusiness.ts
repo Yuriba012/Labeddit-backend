@@ -110,7 +110,7 @@ export class CommentsBusiness {
     await this.commentsDatabase.createComment(newComment);
 
     const output: CreateCommentOutputDTO = {
-      message: "Comentário inserido com sucesso.",
+      message: "Comentário publicado!",
     };
     return output;
   };
@@ -129,12 +129,12 @@ export class CommentsBusiness {
       await this.commentsDatabase.getCommentById(commentToEditId);
 
     if (!commentToEdit) {
-      throw new NotFoundError("Não há post correspondente ao 'id' informado");
+      throw new NotFoundError("Não há comentário correspondente ao id informado");
     }
 
     if (payload.id !== commentToEdit.creator_id) {
       throw new BadRequestError(
-        "O comentário deve pertencer ao usuário logado para que possa editá-lo"
+        "Somente o proprietário pode editar seu próprio comentário."
       );
     }
 
@@ -148,7 +148,7 @@ export class CommentsBusiness {
     await this.commentsDatabase.editComment(inputToEditDB);
 
     const output: EditCommentOutputDTO = {
-      message: "Comentário modificado com sucesso.",
+      message: "Comentário modificado!",
     };
     return output;
   };
@@ -189,7 +189,7 @@ export class CommentsBusiness {
 
     //Verifica se o post não pertence ao próprio usuário.
     if (commentDB?.creator_id === userId) {
-      throw new BadRequestError("O usuário não pode reagir ao próprio comment.");
+      throw new BadRequestError("Um usuário não pode reagir ao próprio comentário.");
     }
 
     const likeDB = await this.commentsDatabase.getLike(inputLikeDB);
@@ -203,7 +203,7 @@ export class CommentsBusiness {
       //Caminho se for a primeira reação do usuário ao comment.
       await this.commentsDatabase.createLike(inputLikeDB);
       await this.commentsDatabase.addLikeInComment(inputLikeDB);
-      output.message = "Like/Dislike enviado com sucesso.";
+      output.message = "Seu Like/Dislike foi enviado!";
     } else {
       //Caminho para o caso de o usuário já possuir uma reação ao comment.
       //Verifica se o like/dislike é igual ao like/dislike já registrado para o comment.
@@ -213,14 +213,14 @@ export class CommentsBusiness {
         await this.commentsDatabase.deleteLike(inputLikeDB);
         //Decremento do like/dislike feito no comment anteriormente pelo usuário.
         await this.commentsDatabase.decreaseLikeInComment(inputLikeDB);
-        output.message = "Like/Dislike removido com sucesso.";
+        output.message = "Seu Like/Dislike foi removido!";
       } else {
         //Caminho para o caso de que o like enviado pelo usuário é diferente do like enviado anteriormente.
         //Inverte o like no banco de dados (tabela de relações user x comment).
         await this.commentsDatabase.changeLike(inputLikeDB);
         //Converte like em dislike ou vice-versa no comment no banco de dados.
         await this.commentsDatabase.overwriteLikeInComment(inputLikeDB);
-        output.message = "Like/Dislike alterado com sucesso.";
+        output.message = "Seu Like/Dislike foi alterado!";
       }
     }
     return output;
@@ -246,13 +246,13 @@ export class CommentsBusiness {
 
     if (payload.id !== commentExists.creator_id && payload.role !== USER_ROLE.ADMIN) {
       throw new BadRequestError(
-        "O comentário deve pertencer ao usuário logado para que possa deletá-lo"
+        "Somente o proprietário pode excluir seu próprio comentário."
       );
     }
 
     await this.commentsDatabase.deleteComment(idToDelete, commentExists.post_id);
     const output: DeleteCommentOutputDTO = {
-      message: "Comentário deletado com sucesso.",
+      message: "Seu comentário foi excluído",
     };
     return output;
   };

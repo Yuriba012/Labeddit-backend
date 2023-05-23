@@ -13,17 +13,26 @@ describe("Teste do método editPost", () => {
     new TokenManagerMock()
   );
 
+  
   test("Caso de requisição bem sucedida", async () => {
-    const input = EditPostInputSchema.parse({
-      idToEdit: "p001",
-      newContent: "Novo conteúdo teste",
-      token: "token-mock-user1",
-    });
+    const input = {
+        id: "p001",
+        token:"token-mock-user1"
+    }
 
-    const output = await postsBusiness.editPost(input);
-
+    const output = await postsBusiness.getPostById(input)
     expect(output).toEqual({
-      message: "Post modificado.",
-    });
-  });
-});
+        id: "p001",
+        content: "post de user1",
+        likes: 0,
+        dislikes: 0,
+        comments: 0,
+        createdAt: expect.any(String),
+        updatedAt: "",
+        creator: {
+          id: "u001",
+          name: "user1",
+        },
+    })
+  })
+})

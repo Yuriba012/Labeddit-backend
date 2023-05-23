@@ -24,7 +24,7 @@ describe("Teste do método putLikeComment", () => {
     const output = await commentsBusiness.putLikeComment(input)
 
     expect(output).toEqual({
-        message: "Like/Dislike enviado com sucesso."
+        message: "Seu Like/Dislike foi enviado!"
     })
   });
 
@@ -37,7 +37,7 @@ describe("Teste do método putLikeComment", () => {
     const output = await commentsBusiness.putLikeComment(input)
 
     expect(output).toEqual({
-        message: "Like/Dislike removido com sucesso."
+        message: "Seu Like/Dislike foi removido!"
     })
   });
 
@@ -50,7 +50,7 @@ describe("Teste do método putLikeComment", () => {
     const output = await commentsBusiness.putLikeComment(input)
 
     expect(output).toEqual({
-        message: "Like/Dislike alterado com sucesso."
+        message: "Seu Like/Dislike foi alterado!"
     })
   });
 });

@@ -161,7 +161,7 @@ export class CommentsDatabaseMock extends BaseDatabase {
   ): Promise<void> => {
 
   };
-  public deleteComment = async (idToDelete: string): Promise<void> => {
+  public deleteComment = async (idToDelete: string, postId: string): Promise<void> => {
 
   };
 }

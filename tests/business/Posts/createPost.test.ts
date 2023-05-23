@@ -4,7 +4,6 @@ import { UsersDatabaseMock } from "../../mocks/UsersDatabaseMock";
 import { PostsDatabaseMock } from "../../mocks/PostsDatabaseMock";
 import { PostsBusiness } from "../../../src/business/PostsBusiness";
 import { CreatePostInputSchema } from "../../../src/dto/createPost.dto";
-import { CommentsDatabaseMock } from "../../mocks/CommentsDatabaseMock";
 
 describe("Teste do método createPost", () => {
   const postsBusiness = new PostsBusiness(
@@ -23,7 +22,7 @@ describe("Teste do método createPost", () => {
     const output = await postsBusiness.createPost(input);
 
     expect(output).toEqual({
-      message: "Post criado com sucesso.",
+      message: "Seu post foi criado!",
     });
   });
 });
