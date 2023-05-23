@@ -19,7 +19,7 @@ describe("Teste do método createComment", () => {
         const output = await commentsBusiness.createComment(input)
 
         expect(output).toEqual({
-            message: "Comentário inserido com sucesso."
+            message: "Comentário publicado!"
         })
     })
 })

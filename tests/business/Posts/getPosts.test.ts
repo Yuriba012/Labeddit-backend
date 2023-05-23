@@ -5,7 +5,6 @@ import { PostsDatabaseMock } from "../../mocks/PostsDatabaseMock";
 import { PostsBusiness } from "../../../src/business/PostsBusiness";
 import { GetPostsSchema } from "../../../src/dto/getPosts.dto";
 import { NotFoundError } from "../../../src/errors/NotFoundError";
-import { CommentsDatabaseMock } from "../../mocks/CommentsDatabaseMock";
 
 describe("Teste do método getPosts", () => {
   const postsBusiness = new PostsBusiness(
@@ -28,6 +27,7 @@ describe("Teste do método getPosts", () => {
         content: "post de user1",
         likes: 0,
         dislikes: 0,
+        comments: 0,
         createdAt: expect.any(String),
         updatedAt: "",
         creator: {
@@ -40,6 +40,7 @@ describe("Teste do método getPosts", () => {
         content: "post de user2",
         likes: 0,
         dislikes: 0,
+        comments: 0,
         createdAt: expect.any(String),
         updatedAt: "",
         creator: {
@@ -52,6 +53,7 @@ describe("Teste do método getPosts", () => {
         content: "post de user3",
         likes: 0,
         dislikes: 0,
+        comments: 0,
         createdAt: expect.any(String),
         updatedAt: "",
         creator: {
@@ -67,7 +69,7 @@ describe("Teste do método getPosts", () => {
     try {
       const input = GetPostsSchema.parse({
         token: "token-mock-user1",
-        query: "user1",
+        query: "user57",
       });
 
       const output = await postsBusiness.getPosts(input);

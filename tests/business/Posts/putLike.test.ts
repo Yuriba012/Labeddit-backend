@@ -4,7 +4,6 @@ import { UsersDatabaseMock } from "../../mocks/UsersDatabaseMock";
 import { PostsDatabaseMock } from "../../mocks/PostsDatabaseMock";
 import { PostsBusiness } from "../../../src/business/PostsBusiness";
 import { PutLikeInputSchema } from "../../../src/dto/putLike.dto";
-import { CommentsDatabaseMock } from "../../mocks/CommentsDatabaseMock";
 
 describe("Teste do método putLike", () => {
   const postsBusiness = new PostsBusiness(
@@ -23,7 +22,7 @@ describe("Teste do método putLike", () => {
     const output = await postsBusiness.putLike(input)
 
     expect(output).toEqual({
-        message: "Like/Dislike enviado com sucesso."
+        message: "Seu Like/Dislike foi enviado!"
     })
   });
 
@@ -36,7 +35,7 @@ describe("Teste do método putLike", () => {
     const output = await postsBusiness.putLike(input)
 
     expect(output).toEqual({
-        message: "Like/Dislike removido com sucesso."
+        message: "Seu Like/Dislike foi removido!"
     })
   });
 
@@ -49,7 +48,7 @@ describe("Teste do método putLike", () => {
     const output = await postsBusiness.putLike(input)
 
     expect(output).toEqual({
-        message: "Like/Dislike alterado com sucesso."
+        message: "Seu Like/Dislike foi alterado!"
     })
   });
 });

@@ -1,4 +1,3 @@
-import { CommentsDatabase } from "../database/CommentsDatabase";
 import { PostsDatabase } from "../database/PostsDatabase";
 import { UsersDatabase } from "../database/UsersDatabase";
 import { CreatePostInputDTO, CreatePostOutputDTO } from "../dto/createPost.dto";
@@ -136,7 +135,7 @@ export class PostsBusiness {
     await this.postsDatabase.createPost(newPost);
 
     const output: CreatePostOutputDTO = {
-      message: "Post criado com sucesso.",
+      message: "Seu post foi criado!",
     };
     return output;
   };
@@ -161,7 +160,7 @@ export class PostsBusiness {
 
     if (payload.id !== postToEdit.creator_id) {
       throw new BadRequestError(
-        "O post deve pertencer ao usuário logado para que possa editá-lo"
+        "Somente o proprietário pode editar seu próprio post."
       );
     }
 
@@ -175,7 +174,7 @@ export class PostsBusiness {
     await this.postsDatabase.editPost(inputDB);
 
     const output: EditPostOutputDTO = {
-      message: "Post modificado com sucesso.",
+      message: "Post modificado.",
     };
     return output;
   };
@@ -230,7 +229,7 @@ export class PostsBusiness {
       //Caminho se for a primeira reação do usuário ao post.
       await this.postsDatabase.createLike(inputLikeDB);
       await this.postsDatabase.addLikeInPost(inputLikeDB);
-      output.message = "Like/Dislike enviado com sucesso.";
+      output.message = "Seu Like/Dislike foi enviado!";
     } else {
       //Caminho para o caso de o usuário já possuir uma reação ao post.
       //Verifica se o like/dislike é igual ao like/dislike já registrado para o post.
@@ -240,14 +239,14 @@ export class PostsBusiness {
         await this.postsDatabase.deleteLike(inputLikeDB);
         //Decremento do like/dislike feito no post anteriormente pelo usuário.
         await this.postsDatabase.decreaseLikeInPost(inputLikeDB);
-        output.message = "Like/Dislike removido com sucesso.";
+        output.message = "Seu Like/Dislike foi removido!";
       } else {
         //Caminho para o caso de que o like enviado pelo usuário é diferente do like enviado anteriormente.
         //Inverte o like no banco de dados (tabela de relações user x post).
         await this.postsDatabase.changeLike(inputLikeDB);
         //Converte like em dislike ou vice-versa no post no banco de dados.
         await this.postsDatabase.overwriteLikeInPost(inputLikeDB);
-        output.message = "Like/Dislike alterado com sucesso.";
+        output.message = "Seu Like/Dislike foi alterado!";
       }
     }
     return output;
@@ -267,19 +266,19 @@ export class PostsBusiness {
     const postExists = await this.postsDatabase.getPostByIdDBForm(idToDelete);
     if (!postExists) {
       throw new NotFoundError(
-        "Não há um post correspondente para o 'id' informado."
+        "Não há um post correspondente para o id informado."
       );
     }
 
     if (payload.id !== postExists.creator_id && payload.role !== USER_ROLE.ADMIN) {
       throw new BadRequestError(
-        "O post deve pertencer ao usuário logado para que possa deletá-lo"
+        "Somente o proprietário pode excluir seu próprio post."
       );
     }
 
     await this.postsDatabase.deletePost(idToDelete);
     const output: DeletePostOutputDTO = {
-      message: "Post deletado com sucesso.",
+      message: "Seu post foi excluído",
     };
     return output;
   };

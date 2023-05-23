@@ -15,8 +15,9 @@ export const CreatePostInputSchema = z
       .string({
         required_error: "É obrigatório informar um 'content'",
         invalid_type_error: "'content' deve ter o tipo string",
+        
       })
-      .min(0),
+      .min(1, "Você precisa escrever um conteúdo para publicar."),
     token: z
       .string({
         required_error:
