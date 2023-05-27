@@ -5,6 +5,7 @@ export class Post {
     private likes: number,
     private dislikes: number,
     private comments: number,
+    private reaction: boolean | null,
     private createdAt: string,
     private updatedAt: string,
     private creator: {
@@ -36,6 +37,9 @@ export class Post {
   public getComments(){
     return this.comments;
   }
+  public getReaction(){
+    return this.reaction;
+  }
   public setId(newId:string): void {
     this.id = newId;
   }
@@ -56,5 +60,8 @@ export class Post {
   }
   public setComments(newComments: number):void{
     this.comments = newComments;
+  }
+  public setReaction(newReaction: boolean|null):void{
+    this.reaction = newReaction;
   }
 }

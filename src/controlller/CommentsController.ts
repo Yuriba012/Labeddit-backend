@@ -18,7 +18,7 @@ export class CommentsController {
     try {
       const input = GetCommentInputSchema.parse({
         token: req.headers.authorization as string,
-        postId: req.params.postId as string,
+        postId: req.params.postId as string
       });
       const output = await this.commentsBusiness.getComments(input);
       res.status(200).send(output);

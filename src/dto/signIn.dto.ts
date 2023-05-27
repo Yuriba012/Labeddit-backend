@@ -7,8 +7,12 @@ export interface SignInInputDTO {
 
 export interface SignInOutputDTO {
   message: string;
-  userName: string;
   token: string;
+  user:{
+    id: string,
+    name: string,
+    createdAt: string
+  }
 }
 
 export const SignInInputSchema = z

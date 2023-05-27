@@ -32,31 +32,44 @@ export class PostsBusiness {
   ): Promise<GetPostsOutputDTO[]> => {
     const { token, query } = input;
 
-    const isTokenValid = this.tokenManager.getPayload(token);
+    const payload = this.tokenManager.getPayload(token);
 
-    if (!isTokenValid) {
+    if (!payload) {
       throw new BadRequestError("Token inválido");
     }
 
-    const posts: PostOutputDB[] | undefined = await this.postsDatabase.getPosts(query);
+    const posts: PostOutputDB[] | undefined = await this.postsDatabase.getPosts(
+      query
+    );
 
-    if (!posts){
-      throw new NotFoundError("Nenhum post foi encontrado.")
+    if (!posts) {
+      throw new NotFoundError("Nenhum post foi encontrado.");
     }
 
-    const checkedPosts: Post[] = posts.map(
-      (post) =>
+    const checkedPosts = [];
+
+    for (let post of posts) {
+      const likeDB = await this.postsDatabase.getLike(payload.id, post.id);
+      let reaction: boolean | null;
+      if (!likeDB) {
+        reaction = null;
+      } else {
+        reaction = likeDB.like;
+      }
+      checkedPosts.push(
         new Post(
           post.id,
           post.content,
           post.likes,
           post.dislikes,
           post.comments,
+          reaction,
           post.created_at,
           post.updated_at,
           { id: post.creator_id, name: post.name }
         )
-    );
+      );
+    }
 
     const output: GetPostsOutputDTO[] = checkedPosts.map((post) => {
       return {
@@ -65,6 +78,7 @@ export class PostsBusiness {
         likes: post.getLikes(),
         dislikes: post.getDislikes(),
         comments: post.getComments(),
+        reaction: post.getReaction(),
         createdAt: post.getCreatedAt(),
         updatedAt: post.getUpdatedAt(),
         creator: post.getCreator(),
@@ -74,40 +88,50 @@ export class PostsBusiness {
   };
 
   public getPostById = async (input: any) => {
-    const {id, token} = input
-    const isTokenValid = this.tokenManager.getPayload(token);
+    const { id, token } = input;
+    const payload = this.tokenManager.getPayload(token);
 
-    if (!isTokenValid) {
+    if (!payload) {
       throw new BadRequestError("Token inválido");
     }
-    const post = await this.postsDatabase.getPostByIdOutputForm(id)
-    if(!post){
-      throw new NotFoundError("post não encontrado")
+    const post = await this.postsDatabase.getPostByIdOutputForm(id);
+    if (!post) {
+      throw new NotFoundError("post não encontrado");
     }
-    const checkedPost = 
-        new Post(
-          post.id,
-          post.content,
-          post.likes,
-          post.dislikes,
-          post.comments,
-          post.created_at,
-          post.updated_at,
-          { id: post.creator_id, name: post.name }
-        )
-        const output: GetPostsOutputDTO = {
-            id: checkedPost.getId(),
-            content: checkedPost.getContent(),
-            likes: checkedPost.getLikes(),
-            dislikes: checkedPost.getDislikes(),
-            comments: checkedPost.getComments(),
-            createdAt: checkedPost.getCreatedAt(),
-            updatedAt: checkedPost.getUpdatedAt(),
-            creator: checkedPost.getCreator(),
-        }
 
-        return output;
-  }
+    const likeDB = await this.postsDatabase.getLike(payload.id, post.id);
+    let reaction: boolean | null;
+    if (!likeDB) {
+      reaction = null;
+    } else {
+      reaction = likeDB.like;
+    }
+
+    const checkedPost = new Post(
+      post.id,
+      post.content,
+      post.likes,
+      post.dislikes,
+      post.comments,
+      reaction,
+      post.created_at,
+      post.updated_at,
+      { id: post.creator_id, name: post.name }
+    );
+    const output: GetPostsOutputDTO = {
+      id: checkedPost.getId(),
+      content: checkedPost.getContent(),
+      likes: checkedPost.getLikes(),
+      dislikes: checkedPost.getDislikes(),
+      comments: checkedPost.getComments(),
+      reaction: checkedPost.getReaction(),
+      createdAt: checkedPost.getCreatedAt(),
+      updatedAt: checkedPost.getUpdatedAt(),
+      creator: checkedPost.getCreator(),
+    };
+
+    return output;
+  };
 
   public createPost = async (
     input: CreatePostInputDTO
@@ -218,7 +242,10 @@ export class PostsBusiness {
       throw new BadRequestError("O usuário não pode reagir ao próprio post.");
     }
 
-    const likeDB = await this.postsDatabase.getLike(inputLikeDB);
+    const likeDB = await this.postsDatabase.getLike(
+      inputLikeDB.userId,
+      inputLikeDB.postId
+    );
 
     let output: PutLikeOutputDTO = {
       message: "",
@@ -270,7 +297,10 @@ export class PostsBusiness {
       );
     }
 
-    if (payload.id !== postExists.creator_id && payload.role !== USER_ROLE.ADMIN) {
+    if (
+      payload.id !== postExists.creator_id &&
+      payload.role !== USER_ROLE.ADMIN
+    ) {
       throw new BadRequestError(
         "Somente o proprietário pode excluir seu próprio post."
       );
