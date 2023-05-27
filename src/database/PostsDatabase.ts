@@ -109,8 +109,7 @@ export class PostsDatabase extends BaseDatabase {
       .where({ id: idToEdit });
   };
 
-  public getLike = async (input: InputLikeDB): Promise<InputLikeDB | undefined> => {
-    const { userId, postId } = input;
+  public getLike = async (userId: string, postId:string): Promise<InputLikeDB | undefined> => {
 
     let output: InputLikeDB | undefined;
 

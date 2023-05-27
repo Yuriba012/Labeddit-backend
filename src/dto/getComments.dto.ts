@@ -10,6 +10,7 @@ export interface GetCommentsOutputDTO{
     content: string;
     likes: number;
     dislikes: number;
+    reaction: boolean|null;
     createdAt: string;
     updatedAt: string;
     postId: string;

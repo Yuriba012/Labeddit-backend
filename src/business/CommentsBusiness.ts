@@ -35,11 +35,11 @@ export class CommentsBusiness {
   ): Promise<GetCommentsOutputDTO[]> => {
     const { token, postId } = input;
 
-    const isTokenValid = this.tokenManager.getPayload(token);
+    const payload = this.tokenManager.getPayload(token);
 
     const postExists = await this.postsDatabase.getPostByIdDBForm(postId);
 
-    if (!isTokenValid) {
+    if (!payload) {
       throw new BadRequestError("Token inválido");
     }
 
@@ -53,19 +53,30 @@ export class CommentsBusiness {
       throw new NotFoundError("Este post não possui comentários.");
     }
 
-    const comments = commentsDB.map(
-      (comment) =>
+    const comments = []
+
+    for(let comment of commentsDB){
+      const likeDB = await this.commentsDatabase.getLike(payload.id, comment.id);
+      let reaction: boolean | null;
+      if (!likeDB) {
+        reaction = null;
+      } else {
+        reaction = likeDB.like;
+      }
+      comments.push(
         new Comment(
           comment.id,
           comment.content,
           comment.likes,
           comment.dislikes,
+          reaction,
           comment.created_at,
           comment.updated_at,
           comment.post_id,
           { id: comment.creator_id, name: comment.name }
         )
-    );
+      )
+  }
 
     const output: GetCommentsOutputDTO[] = comments.map((comment) => {
       return {
@@ -73,6 +84,7 @@ export class CommentsBusiness {
         content: comment.getContent(),
         likes: comment.getLikes(),
         dislikes: comment.getDislikes(),
+        reaction: comment.getReaction(),
         createdAt: comment.getCreatedAt(),
         updatedAt: comment.getUpdatedAt(),
         postId: comment.getPostId(),
@@ -192,7 +204,7 @@ export class CommentsBusiness {
       throw new BadRequestError("Um usuário não pode reagir ao próprio comentário.");
     }
 
-    const likeDB = await this.commentsDatabase.getLike(inputLikeDB);
+    const likeDB = await this.commentsDatabase.getLike(inputLikeDB.userId, inputLikeDB.commentId);
 
     let output: PutLikeCommentOutputDTO = {
       message: "",

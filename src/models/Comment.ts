@@ -4,6 +4,7 @@ export class Comment {
       private content: string,
       private likes: number,
       private dislikes: number,
+      private reaction: boolean|null,
       private createdAt: string,
       private updatedAt: string,
       private postId: string,
@@ -23,6 +24,9 @@ export class Comment {
     }
     public getDislikes(): number {
       return this.dislikes;
+    }
+    public getReaction(){
+      return this.reaction;
     }
     public getCreatedAt(): string {
       return this.createdAt;
@@ -56,6 +60,9 @@ export class Comment {
     }
     public setCreator(object: { id: string, name: string }): void {
       this.creator = object;
+    }
+    public setReaction(newReaction: boolean|null):void{
+      this.reaction = newReaction;
     }
   }
   

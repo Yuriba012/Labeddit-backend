@@ -102,8 +102,12 @@ export class UsersBusiness {
 
     const output: SignInOutputDTO = {
       message: "Usuário efetuou o login com sucesso.",
-      userName: payload.name,
       token,
+      user: {
+        id: userExists.id,
+        name: userExists.name,
+        createdAt: userExists.created_at,
+      }
     };
     return output;
   };

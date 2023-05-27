@@ -11,6 +11,7 @@ export interface GetPostsOutputDTO {
   likes: number;
   dislikes: number;
   comments: number;
+  reaction: boolean | null;
   createdAt: string;
   updatedAt: string;
   creator: {
@@ -28,6 +29,6 @@ export const GetPostsSchema = z
     query: z
       .string({ invalid_type_error: "A query deve ser do tipo string" })
       .min(0)
-      .optional(),
+      .optional()
   })
   .transform((data) => data as GetPostsInputDTO);

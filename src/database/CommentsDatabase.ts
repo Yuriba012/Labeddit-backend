@@ -86,9 +86,8 @@ export class CommentsDatabase extends BaseDatabase {
   };
 
   public getLike = async (
-    input: InputCommentLikeDB
+    userId: string, commentId: string
   ): Promise<InputCommentLikeDB | undefined> => {
-    const { userId, commentId } = input;
 
     let output: InputCommentLikeDB | undefined;
 
